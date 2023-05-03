@@ -5,7 +5,8 @@
  * @param {HTMLSelectElement} select - The horn select element
  * @param {HTMLImageElement} img - The horn image element
  */
-const changeHorn = (select, img) => {
+const changeHorn = (select, img, audio) => {
+	// Change the horn image
 	const horn = select.value;
 
 	switch (horn) {
@@ -26,16 +27,62 @@ const changeHorn = (select, img) => {
 			img.alt = 'No Image';
 			break;
 	}
+
+	// Change the audio source
+	audio.src = `assets/audio/${select.value}.mp3`;
 }
+
+/**
+ * Change the volume icon based on the volume slider
+ * @param {HTMLInputElement} slider - The volume slider
+ * @param {HTMLImageElement} icon - The volume icon
+ * @param {HTMLAudioElement} audio - The audio element
+ */
+const changeVolume = (slider, icon, audio) => {
+	const volume = Number(slider?.value)
+
+	switch (true) {
+		case (volume === 0):
+			icon.src = 'assets/icons/volume-level-0.svg'
+			icon.alt = 'Volume level 0'
+			break
+		case (volume < 33):
+			icon.src = 'assets/icons/volume-level-1.svg'
+			icon.alt = 'Volume level 1'
+			break
+		case (volume < 67):
+			icon.src = 'assets/icons/volume-level-2.svg'
+			icon.alt = 'Volume level 2'
+			break
+		default:
+			icon.src = 'assets/icons/volume-level-3.svg'
+			icon.alt = 'Volume level 3'
+			break
+	}
+
+	audio.volume = volume / 100
+}
+
+
 
 /**
  * Initialize the expose page
  */
 const init = () => {
-	const hornSelect = document.getElementById('horn-select');
-	const hornImg = document.querySelector("#expose>img");
+	// image element
+	const hornSelect = document.getElementById('horn-select')
+	const hornImg = document.querySelector("#expose>img")
+	// audio element
+	const audio = document.querySelector('#expose>audio')
+	const volumeSlider = document.getElementById('volume')
+	const volumeIcon = document.querySelector('#volume-controls>img')
+	// button element
+	const button = document.querySelector('#expose>button')
 
-	hornSelect.addEventListener('change', changeHorn.bind(null, hornSelect, hornImg));
+	hornSelect?.addEventListener('change', changeHorn.bind(null, hornSelect, hornImg, audio))
+	volumeSlider?.addEventListener('input', changeVolume.bind(null, volumeSlider, volumeIcon, audio))
+	button?.addEventListener('click', audio.play.bind(audio))
 }
 
-window.addEventListener('DOMContentLoaded', init);
+
+window.addEventListener('DOMContentLoaded', init)
