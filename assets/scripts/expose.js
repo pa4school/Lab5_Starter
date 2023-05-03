@@ -63,12 +63,35 @@ const changeVolume = (slider, icon, audio) => {
 	audio.volume = volume / 100
 }
 
+/**
+ * Play the audio
+ * Disable the button until the audio is finished playing
+ * If the party horn is selected, play the confetti animation
+ * @param {HTMLAudioElement} audio - The audio element
+ * @param {HTMLButtonElement} button - The button element
+ * @param {HTMLSelectElement} select - The horn select element
+ */
+const play = async (audio, button, select) => {
+	// Play the audio
+	audio.play()
+
+	// If the party horn is selected, play the confetti animation
+	if (select.value === 'party-horn') {
+		const confetti = new JSConfetti()
+		confetti.addConfetti()
+	}
+
+	// Disable the button until the audio is finished playing
+	button.disabled = true
+	await new Promise(resolve => audio.addEventListener('ended', resolve))
+	button.disabled = false
+}
 
 
 /**
  * Initialize the expose page
  */
-const init = () => {
+const init = async () => {
 	// image element
 	const hornSelect = document.getElementById('horn-select')
 	const hornImg = document.querySelector("#expose>img")
@@ -81,7 +104,7 @@ const init = () => {
 
 	hornSelect?.addEventListener('change', changeHorn.bind(null, hornSelect, hornImg, audio))
 	volumeSlider?.addEventListener('input', changeVolume.bind(null, volumeSlider, volumeIcon, audio))
-	button?.addEventListener('click', audio.play.bind(audio))
+	button?.addEventListener('click', play.bind(null, audio, button, hornSelect))
 }
 
 
