@@ -70,14 +70,14 @@ const changeVolume = (slider, icon, audio) => {
  * @param {HTMLAudioElement} audio - The audio element
  * @param {HTMLButtonElement} button - The button element
  * @param {HTMLSelectElement} select - The horn select element
+ * @param {ConfettiGenerator} confetti - The confetti generator
  */
-const play = async (audio, button, select) => {
+const play = async (audio, button, select, confetti) => {
 	// Play the audio
 	audio.play()
 
 	// If the party horn is selected, play the confetti animation
 	if (select.value === 'party-horn') {
-		const confetti = new JSConfetti()
 		confetti.addConfetti()
 	}
 
@@ -101,10 +101,12 @@ const init = async () => {
 	const volumeIcon = document.querySelector('#volume-controls>img')
 	// button element
 	const button = document.querySelector('#expose>button')
+	// confetti element
+	const confetti = new JSConfetti()
 
 	hornSelect?.addEventListener('change', changeHorn.bind(null, hornSelect, hornImg, audio))
 	volumeSlider?.addEventListener('input', changeVolume.bind(null, volumeSlider, volumeIcon, audio))
-	button?.addEventListener('click', play.bind(null, audio, button, hornSelect))
+	button?.addEventListener('click', play.bind(null, audio, button, hornSelect, confetti))
 }
 
 
