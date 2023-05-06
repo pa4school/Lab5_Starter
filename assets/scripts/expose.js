@@ -81,9 +81,13 @@ const play = async (audio, button, select, confetti) => {
 		confetti.addConfetti()
 	}
 
-	// Disable the button until the audio is finished playing
+	// Disable the button until the audio is finished playing 
+	// or change to different horn
 	button.disabled = true
-	await new Promise(resolve => audio.addEventListener('ended', resolve))
+	await new Promise(resolve => {
+		audio.addEventListener('ended', resolve)
+		select.addEventListener('change', resolve)
+	})
 	button.disabled = false
 }
 
